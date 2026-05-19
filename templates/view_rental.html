@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>Rental Details - Baandee Condos</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#F7F4EB] min-h-screen text-[#3D332A] font-sans pb-12">
+
+  <nav class="w-full bg-[#EFEAE0] border-b border-gray-200 px-8 py-4 flex items-center justify-between mb-8">
+    <div class="flex items-center gap-3">
+      <div class="text-[#3D332A]">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" /></svg>
+      </div>
+      <div class="leading-none">
+        <span class="block text-lg font-bold tracking-wider uppercase">Baandee</span>
+        <span class="block text-xs font-semibold tracking-widest opacity-80 uppercase">Condos</span>
+      </div>
+    </div>
+  </nav>
+
+  <main class="max-w-5xl mx-auto px-6">
+    <div class="mb-6 flex justify-between items-center">
+      <div>
+        <a href="{{ url_for('index') }}" class="text-sm text-gray-500 hover:text-[#4D7254] flex items-center gap-1">← กลับหน้าจัดการ</a>
+        <h1 class="text-2xl font-bold mt-2">Rental Details</h1>
+      </div>
+      <div>
+        {% if rental and rental['status'] == 'Occupied' %}
+          <span class="bg-[#A94444] text-white text-sm px-4 py-1.5 rounded-md font-medium shadow-sm">Occupied</span>
+        {% else %}
+          <span class="bg-[#4D7254] text-white text-sm px-4 py-1.5 rounded-md font-medium shadow-sm">Available</span>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="md:col-span-1">
+        <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm text-center">
+          <div class="w-full aspect-[4/3] bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center border border-gray-200 shadow-inner mb-4">
+            {% if rental['room_image'] %}
+              <img src="{{ rental['room_image'] }}" alt="Room" class="w-full h-full object-cover">
+            {% else %}
+              <span class="text-sm text-gray-400 italic">No Image</span>
+            {% endif %}
+          </div>
+          <div class="text-xs font-extrabold uppercase text-[#4D7254] tracking-widest mb-1">{{ rental['condo_name'] if rental['condo_name'] else 'Baandee Condo' }}</div>
+          <div class="font-bold text-xl text-gray-900">Room {{ rental['room_number'] }}</div>
+          
+          <div class="grid grid-cols-2 gap-2 mt-4 pt-3 border-t border-gray-100 text-sm">
+            <div class="bg-gray-50 p-2 rounded-lg">
+              <span class="block text-xs text-gray-400">ชั้นที่</span>
+              <span class="font-bold text-gray-700">{{ rental['floor'] }}</span>
+            </div>
+            <div class="bg-gray-50 p-2 rounded-lg">
+              <span class="block text-xs text-gray-400">ขนาดพื้นที่</span>
+              <span class="font-bold text-gray-700">{{ rental['room_size'] if rental['room_size'] else '-' }} ตร.ม.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="md:col-span-2 space-y-6">
+        <div class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm space-y-4">
+          <h3 class="font-bold text-base border-b pb-2 text-[#4D7254]">👤 ข้อมูลผู้เช่า</h3>
+          {% if rental['first_name'] %}
+          <div class="grid grid-cols-2 gap-4 text-sm">
+            <div>
+              <span class="block text-xs text-gray-400">ชื่อ-นามสกุล</span>
+              <span class="font-semibold text-base">{{ rental['first_name'] }} {{ rental['last_name'] }}</span>
+            </div>
+            <div>
+              <span class="block text-xs text-gray-400">เบอร์โทรศัพท์</span>
+              <span class="font-semibold text-base">{{ rental['phone'] }}</span>
+            </div>
+            <div class="col-span-2">
+              <span class="block text-xs text-gray-400">อีเมล</span>
+              <span class="font-semibold text-base text-gray-700">{{ rental['email'] if rental['email'] else '-' }}</span>
+            </div>
+          </div>
+          {% else %}
+            <p class="text-sm italic text-gray-400 text-center py-4">ไม่มีข้อมูลผู้เช่าในห้องนี้</p>
+          {% endif %}
+        </div>
+
+        <div class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm space-y-4">
+          <h3 class="font-bold text-base border-b pb-2 text-[#4D7254]">📄 รายละเอียดสัญญาเช่า</h3>
+          {% if rental['start_date'] %}
+          <div class="grid grid-cols-2 gap-4 text-sm">
+            <div>
+              <span class="block text-xs text-gray-400">วันเริ่มต้นสัญญา</span>
+              <span class="font-semibold text-base">{{ rental['start_date'] }}</span>
+            </div>
+            <div>
+              <span class="block text-xs text-gray-400">วันสิ้นสุดสัญญา</span>
+              <span class="font-semibold text-base">{{ rental['end_date'] }}</span>
+            </div>
+            <div class="col-span-2 bg-[#FDFCF9] p-3 rounded-lg border border-gray-100">
+              <span class="block text-xs text-gray-400">ค่าเช่ารายเดือน</span>
+              <span class="text-2xl font-bold text-[#4D7254]">{{ "{:,.0f}".format(rental['monthly_rent']) if rental['monthly_rent'] else '-' }}</span>
+              <span class="text-xs text-gray-500 font-normal">บาท / เดือน</span>
+            </div>
+          </div>
+          {% else %}
+            <p class="text-sm italic text-gray-400 text-center py-4">ไม่มีข้อมูลสัญญาเช่าในห้องนี้</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-6 bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+      <h3 class="font-bold text-base border-b pb-2 mb-4 text-gray-800">📊 ประวัติธุรกรรมภายในห้องพัก</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <h4 class="text-xs font-bold uppercase text-gray-400 mb-2">💰 ประวัติการชำระเงิน (ตารางที่ 4)</h4>
+          <div class="border rounded-lg max-h-52 overflow-y-auto text-xs">
+            <table class="w-full text-left border-collapse">
+              <thead class="bg-gray-50 sticky top-0 border-b">
+                <tr><th class="p-2">วันที่</th><th class="p-2">ยอดเงิน</th><th class="p-2 text-center">สถานะ</th></tr>
+              </thead>
+              <tbody class="divide-y">
+                {% for p in payments %}
+                <tr>
+                  <td class="p-2">{{ p['payment_date'] }}</td>
+                  <td class="p-2 font-semibold">{{ "{:,.2f}".format(p['amount']) }} บ.</td>
+                  <td class="p-2 text-center"><span class="px-2 py-0.5 rounded-full {% if p['payment_status'] == 'Paid' %} bg-green-50 text-green-700 {% else %} bg-red-50 text-red-700 {% endif %}">{{ p['payment_status'] }}</span></td>
+                </tr>
+                {% else %}
+                <tr><td colspan="3" class="p-4 text-center text-gray-400 italic">ไม่มีบันทึกการเงิน</td></tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="text-xs font-bold uppercase text-gray-400 mb-2">🔧 บันทึกการแจ้งซ่อม (ตารางที่ 5)</h4>
+          <div class="border rounded-lg max-h-52 overflow-y-auto text-xs">
+            <table class="w-full text-left border-collapse">
+              <thead class="bg-gray-50 sticky top-0 border-b">
+                <tr><th class="p-2">วันที่แจ้ง</th><th class="p-2">รายการ</th><th class="p-2 text-center">สถานะ</th></tr>
+              </thead>
+              <tbody class="divide-y">
+                {% for m in maintenance %}
+                <tr>
+                  <td class="p-2">{{ m['request_date'] }}</td>
+                  <td class="p-2">{{ m['description'] }}</td>
+                  <td class="p-2 text-center"><span class="px-2 py-0.5 rounded-full {% if m['status'] == 'Completed' %} bg-green-50 text-green-700 {% else %} bg-yellow-50 text-yellow-700 {% endif %}">{{ m['status'] }}</span></td>
+                </tr>
+                {% else %}
+                <tr><td colspan="3" class="p-4 text-center text-gray-400 italic">ไม่มีรายการแจ้งซ่อม</td></tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</body>
+</html>
